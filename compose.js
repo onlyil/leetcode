@@ -1,9 +1,9 @@
 /*
  * @Author: lin.cao
  * @Date: 2020-04-14 18:19:06
- * @LastEditTime: 2020-04-14 18:40:01
+ * @LastEditTime: 2020-05-06 09:58:17
  * @LastEditors: lin.cao
- * @Description: 
+ * @Description: koa compose
  * @FilePath: /leetcode/compose.js
  */
 

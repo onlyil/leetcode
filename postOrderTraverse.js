@@ -1,38 +1,38 @@
 /*
  * @Author: lin.cao
- * @Date: 2020-05-13 09:18:30
- * @LastEditTime: 2020-05-25 11:05:42
+ * @Date: 2020-05-19 14:43:18
+ * @LastEditTime: 2020-05-25 11:04:50
  * @LastEditors: lin.cao
- * @Description: 二叉树前序遍历
- * @FilePath: /leetcode/preOrderTraverse.js
+ * @Description: 二叉树后序遍历
+ * @FilePath: /leetcode/postOrderTraverse.js
  */
 // 递归
-const preOrderTraverse = (root) => {
+const postOrderTraverse = (root) => {
     let result = []
 
-    const preOrderTraverseNode = (node) => {
+    const postOrderTraverseNode = (node) => {
         if (node) {
+            postOrderTraverseNode(node.left)
+            postOrderTraverseNode(node.right)
             result.push(node.val)
-            preOrderTraverseNode(node.left)
-            preOrderTraverseNode(node.right)
         }
     }
 
-    preOrderTraverseNode(root)
+    postOrderTraverseNode(root)
     return result
 }
 
 // 栈
-const preOrderTraverseByStack = (root) => {
-    let result = []
-    let stack = []
+const postOrderTraverseByStack = (root) => {
+    const result = []
+    const stack = []
 
     if (root) {
         stack.push(root)
     }
     while (stack.length > 0) {
         const curNode = stack.pop()
-        result.push(curNode.val)
+        result.unshift(curNode.val)
         if (curNode.left) {
             stack.push(curNode.left)
         }
@@ -40,6 +40,7 @@ const preOrderTraverseByStack = (root) => {
             stack.push(curNode.right)
         }
     }
+
     return result
 }
 
@@ -67,5 +68,5 @@ const tree = {
     },
 }
 
-console.log(preOrderTraverse(tree)) // [ 1, 2, 4, 3, 5, 6 ]
-console.log(preOrderTraverseByStack(tree)) // [ 1, 2, 4, 3, 5, 6 ]
+console.log(postOrderTraverse(tree)) // [ 4, 2, 5, 6, 3, 1 ]
+console.log(postOrderTraverseByStack(tree)) // [ 4, 2, 5, 6, 3, 1 ]

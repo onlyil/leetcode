@@ -1,21 +1,21 @@
 /*
  * @Author: lin.cao
  * @Date: 2020-05-13 09:18:30
- * @LastEditTime: 2020-05-25 11:05:42
+ * @LastEditTime: 2020-05-28 16:01:54
  * @LastEditors: lin.cao
  * @Description: 二叉树前序遍历
- * @FilePath: /leetcode/preOrderTraverse.js
+ * @FilePath: /leetcode/algorithm/tree/preOrderTraverse.js
  */
 // 递归
 const preOrderTraverse = (root) => {
     let result = []
 
     const preOrderTraverseNode = (node) => {
-        if (node) {
-            result.push(node.val)
-            preOrderTraverseNode(node.left)
-            preOrderTraverseNode(node.right)
-        }
+        if (!node) return
+
+        result.push(node.val)
+        preOrderTraverseNode(node.left)
+        preOrderTraverseNode(node.right)
     }
 
     preOrderTraverseNode(root)
@@ -33,11 +33,11 @@ const preOrderTraverseByStack = (root) => {
     while (stack.length > 0) {
         const curNode = stack.pop()
         result.push(curNode.val)
-        if (curNode.left) {
-            stack.push(curNode.left)
-        }
         if (curNode.right) {
             stack.push(curNode.right)
+        }
+        if (curNode.left) {
+            stack.push(curNode.left)
         }
     }
     return result

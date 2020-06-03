@@ -1,10 +1,10 @@
 /*
  * @Author: lin.cao
  * @Date: 2020-05-25 11:06:13
- * @LastEditTime: 2020-05-25 12:00:19
+ * @LastEditTime: 2020-06-03 15:15:45
  * @LastEditors: lin.cao
  * @Description: 二叉树中序序遍历
- * @FilePath: /leetcode/inorderTraverse.js
+ * @FilePath: /leetcode/algorithm/tree/inorderTraverse.js
  */
 // 递归
 const inorderTraverse = (root) => {
@@ -29,12 +29,15 @@ const inorderTraverseByStack = (root) => {
     let node = root
 
     while (stack.length || node) {
+        // 向左走到头
         while (node) {
             stack.push(node)
             node = node.left
         }
+        // 弹出栈顶
         node = stack.pop()
         result.push(node.val)
+        // 跳到右节点
         node = node.right
     }
 

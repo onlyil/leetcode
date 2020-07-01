@@ -1,10 +1,9 @@
 /*
  * @Author: lin.cao
  * @Date: 2020-04-14 12:12:31
- * @LastEditTime: 2020-04-14 12:12:47
+ * @LastEditTime: 2020-06-30 11:37:12
  * @LastEditors: lin.cao
  * @Description: 计算多个数组的交集
- * @FilePath: /webpack-babel-learn/src/leetcode/intersection.js
  */
 function intersection(...args) {
     if (args.length === 0) {

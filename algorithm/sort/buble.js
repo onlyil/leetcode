@@ -1,13 +1,13 @@
 /*
  * @Author: lin.cao
  * @Date: 2020-06-28 10:33:43
- * @LastEditTime: 2020-06-28 11:14:46
+ * @LastEditTime: 2020-06-29 09:24:27
  * @LastEditors: lin.cao
  * @Description: 冒泡排序
  * @FilePath: /leetcode/algorithm/sort/buble.js
  */
 // 时间复杂度：O(n2)
-// 空间复杂度：O(n)
+// 空间复杂度：O(1)
 // 稳定
 const bubleSort = (arr) => {
     const length = arr.length

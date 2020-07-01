@@ -1,11 +1,14 @@
 /*
  * @Author: lin.cao
  * @Date: 2020-06-28 14:19:20
- * @LastEditTime: 2020-06-28 14:37:56
+ * @LastEditTime: 2020-06-29 09:27:24
  * @LastEditors: lin.cao
  * @Description: 快速排序
  * @FilePath: /leetcode/algorithm/sort/quick.js
  */
+// 时间复杂度：O(nlogn)
+// 空间复杂度：O(logn)
+// 不稳定
 const quickSort = (arr) => {
     if (arr.length <= 1) {
         return arr

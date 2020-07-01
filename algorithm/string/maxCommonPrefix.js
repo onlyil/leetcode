@@ -1,10 +1,11 @@
 /*
  * @Author: lin.cao
  * @Date: 2020-07-01 09:16:55
- * @LastEditTime: 2020-07-01 09:34:36
+ * @LastEditTime: 2020-07-01 09:53:24
  * @LastEditors: lin.cao
  * @Description: 最长公共前缀
  */
+// 时间：O(max(m, n)) m 为数组长度，n 为字符串长度
 const maxCommonPrefix = (arr) => {
     return arr.reduce((acc, cur) => {
         const length = Math.min(acc.length, cur.length)

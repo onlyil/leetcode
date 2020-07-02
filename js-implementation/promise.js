@@ -1,7 +1,7 @@
 /*
  * @Author: lin.cao
  * @Date: 2020-06-02 10:28:14
- * @LastEditTime: 2020-06-02 21:50:46
+ * @LastEditTime: 2020-07-02 10:24:23
  * @LastEditors: lin.cao
  * @Description: Promise 实现
  * @FilePath: /leetcode/promise.js
@@ -122,9 +122,9 @@ class MyPromise {
                 }
             }
 
-            const rejectedCb = (err) => {
+            const rejectedCb = (val) => {
                 try {
-                    const res = rejectCb(err)
+                    const res = rejectCb(val)
                     res instanceof MyPromise ? res.then(resolve, reject) : resolve(res)
                 } catch (error) {
                     reject(error)

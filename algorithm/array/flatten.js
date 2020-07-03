@@ -1,7 +1,7 @@
 /*
  * @Author: lin.cao
  * @Date: 2020-04-14 09:44:34
- * @LastEditTime: 2020-04-14 12:07:35
+ * @LastEditTime: 2020-07-02 17:06:32
  * @LastEditors: lin.cao
  * @Description: 数组扁平化
  * @FilePath: /webpack-babel-learn/src/leetcode/flatten.js
@@ -31,3 +31,9 @@ function flatten(arr) {
 }
 
 console.log(flatten(arr))
+
+const flat = (arr) => {
+    return arr.reduce((acc, cur) => {
+        return acc.concat(Array.isArray(cur) ? flat(cur) : cur)
+    }, [])
+}

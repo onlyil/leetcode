@@ -1,7 +1,7 @@
 /*
  * @Author: lin.cao
  * @Date: 2020-05-31 10:39:36
- * @LastEditTime: 2020-05-31 13:57:11
+ * @LastEditTime: 2020-07-21 09:59:22
  * @LastEditors: lin.cao
  * @Description: LRU 缓存
  * @FilePath: /leetcode/LRUCache.js
@@ -15,7 +15,7 @@ class LRUCache {
     get(key) {
         // 存在就更新
         if (this.cache.has(key)) {
-            const value = his.cache.get(key)
+            const value = this.cache.get(key)
             this.cache.delete(key)
             this.cache.set(key, value)
             return value
@@ -29,7 +29,7 @@ class LRUCache {
             this.cache.delete(key)
             this.cache.set(key, value)
         } else {
-            // 不存在就插入，同事判断是否超出容量
+            // 不存在就插入，同时判断是否超出容量
             this.cache.set(key, value)
             if (this.cache.size > this.capacity) {
                 const firstKey = [...this.cache.keys()][0]

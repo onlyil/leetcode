@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>三角形内角和演示</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    .draggable {
+      cursor: move;
+    }
+
+    .angle-label {
+      font-size: 14px;
+      fill: red;
+    }
+
+    .demo-path {
+      stroke: gray;
+      stroke-width: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <button onclick="startAnimation()">演示内角和为180度</button>
+  <button onClick="location.reload()">重置</button>
+  <svg id="svgCanvas" width="800" height="600"></svg>
+
+  <script>
+    const svg = d3.select("#svgCanvas");
+    let width = 800, height = 600;
+
+    // 固定底边两点
+    const bottomLeft = { x: 300, y: 500 };
+    const bottomRight = { x: 500, y: 500 };
+    let topVertex = { x: 400, y: 200 }; // 初始顶点位置
+
+    // 创建三角形
+    let triangle = svg.append("polygon")
+      .attr("points", getTrianglePoints())
+      .attr("fill", "#87CEEB")
+      .attr("stroke", "black");
+
+    // 创建可拖动的顶点
+    let dragCircle = svg.append("circle")
+      .attr("cx", topVertex.x)
+      .attr("cy", topVertex.y)
+      .attr("r", 5)
+      .attr("class", "draggable")
+      .call(d3.drag().on("drag", dragged));
+
+    // 新增：创建存放角度弧线和标签的容器
+    const angleMarks = svg.append("g").attr("class", "angle-marks");
+
+    // 角度标签
+    let angleLabels = [];
+    angleLabels.push(svg.append("text").attr("class", "angle-label"));
+    angleLabels.push(svg.append("text").attr("class", "angle-label"));
+    angleLabels.push(svg.append("text").attr("class", "angle-label"));
+
+    // 拖拽事件处理
+    function dragged(event) {
+      topVertex.x = event.x;
+      topVertex.y = event.y;
+      updateTriangle();
+      updateAngleLabels();
+    }
+
+    // 更新三角形
+    function updateTriangle() {
+      triangle.attr("points", getTrianglePoints());
+      dragCircle.attr("cx", topVertex.x).attr("cy", topVertex.y);
+    }
+
+    // 计算三角形顶点坐标
+    function getTrianglePoints() {
+      return `${bottomLeft.x},${bottomLeft.y} ${bottomRight.x},${bottomRight.y} ${topVertex.x},${topVertex.y}`;
+    }
+
+    // 修改后的 updateAngleLabels 函数
+    function updateAngleLabels() {
+      const angles = calculateAngles();
+      angleLabels[0].attr("x", topVertex.x - 30).attr("y", topVertex.y - 10)
+        .text(`${angles[0].toFixed(0)}°`);
+      angleLabels[1].attr("x", bottomLeft.x - 40).attr("y", bottomLeft.y + 20)
+        .text(`${angles[1].toFixed(0)}°`);
+      angleLabels[2].attr("x", bottomRight.x + 10).attr("y", bottomRight.y + 20)
+        .text(`${angles[2].toFixed()}°`);
+
+      // 清空旧弧线（关键修复）
+      angleMarks.selectAll(".angle-arc").remove();
+
+      // 绘制三个内角弧线（带唯一标识）
+      drawAngleArc(topVertex, bottomLeft, bottomRight, angles[0], "A");    // 顶角
+      drawAngleArc(bottomLeft, bottomRight, topVertex, angles[1], "B");    // 左下角
+      drawAngleArc(bottomRight, topVertex, bottomLeft, angles[2], "C");    // 右下角
+    }
+
+    // 改进后的弧线绘制函数
+    function drawAngleArc(center, p1, p2, angle, cornerId) {
+      const radius = 20;
+
+      // 计算向量方向
+      const v1 = { x: p1.x - center.x, y: p1.y - center.y };
+      const v2 = { x: p2.x - center.x, y: p2.y - center.y };
+
+      // 计算起始角度（修复方向问题）
+      const startAngle = Math.atan2(v1.y, v1.x);
+      const endAngle = Math.atan2(v2.y, v2.x);
+
+      // 自动判断绘制方向
+      let sweepFlag = 0;
+      if ((endAngle - startAngle + Math.PI * 2) % (Math.PI * 2) > Math.PI) {
+        sweepFlag = 1;
+      }
+
+      // 创建弧线路径
+      const arcPath = d3.path();
+      arcPath.moveTo(
+        center.x + radius * Math.cos(startAngle),
+        center.y + radius * Math.sin(startAngle)
+      );
+      arcPath.arc(
+        center.x, center.y, radius,
+        startAngle, endAngle,
+        sweepFlag
+      );
+
+      // 添加唯一ID选择器（关键修复）
+      angleMarks.selectAll(`path#arc-${cornerId}`)
+        .data([arcPath.toString()])
+        .join("path")
+        .attr("id", `arc-${cornerId}`)
+        .attr("class", "angle-arc")
+        .attr("d", d => d)
+        .attr("fill", "none")
+        .attr("stroke", "#FF5722")
+        .attr("stroke-width", 2);
+    }
+
+    // 计算三个内角
+    function calculateAngles() {
+      const a = distance(bottomLeft, bottomRight);
+      const b = distance(topVertex, bottomRight);
+      const c = distance(topVertex, bottomLeft);
+
+      const angleB = calculateAngle(b, c, a); // 顶角
+      const angleC = calculateAngle(c, a, b);  // 左下角
+      const angleA = calculateAngle(a, b, c);  // 右下角
+      return [angleA, angleB, angleC];
+    }
+
+    // 计算两点距离
+    function distance(p1, p2) {
+      return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
+    }
+
+    // 余弦定理计算角度
+    function calculateAngle(a, b, c) {
+      return Math.acos((b ** 2 + c ** 2 - a ** 2) / (2 * b * c)) * (180 / Math.PI);
+    }
+
+    // 初始化角度标签
+    updateAngleLabels();
+
+    // 动画演示
+    function startAnimation() {
+      // 计算中点
+      const midAB = midpoint(topVertex, bottomLeft);
+      const midAC = midpoint(topVertex, bottomRight);
+      const midBC = midpoint(bottomLeft, bottomRight);
+
+      // 分割三角形的三个部分
+      const partB = createPath([bottomLeft, midAB, midBC]);
+      const partC = createPath([bottomRight, midAC, midBC]);
+      const partA = createPath([topVertex, midAB, midAC]);
+
+      // 添加分割线
+      svg.append("path").attr("d", createPath([midAB, midBC])).attr("class", "demo-path");
+      svg.append("path").attr("d", createPath([midAC, midBC])).attr("class", "demo-path");
+      svg.append("path").attr("d", createPath([midAB, midAC])).attr("class", "demo-path");
+
+      // 动画参数
+      animatePart(partA, midAC, 180, 0, "#FFA07A");
+      setTimeout(() => {
+        animatePart(partB, bottomLeft, 0, 200, "#68B0AB");
+      }, 1800)
+      // animatePart(partC, bottomRight, 90, 100);
+
+
+    }
+
+    // 创建路径
+    function createPath(points) {
+      let path = `M ${points[0].x} ${points[0].y}`;
+      for (let i = 1; i < points.length; i++) {
+        path += ` L ${points[i].x} ${points[i].y}`;
+      }
+      path += ' Z';
+      return path;
+    }
+
+    // 计算中点
+    function midpoint(p1, p2) {
+      return { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+    }
+
+    // 执行动画
+    function animatePart(part, origin, rotate, translateY, color) {
+      const { x, y } = origin;
+      const path = svg.append("path")
+        .attr("d", part)
+        .attr("fill", color)
+        .attr("stroke", "black")
+        .attr("transform", `rotate(0 ${x} ${y}) translate(0)`)
+        .transition()
+        .duration(1500)
+        .attrTween("transform", () => {
+          const interpolator = d3.interpolateNumber(0, rotate);
+          const interpolator2 = d3.interpolateNumber(0, translateY);
+          return (t) => `rotate(${interpolator(t)} ${x} ${y}) translate(${interpolator2(t)})`;
+        });
+    }
+  </script>
+</body>
+
+</html>

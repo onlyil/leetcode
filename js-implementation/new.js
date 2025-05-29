@@ -12,6 +12,7 @@
 // 4. 返回新对象
 const myNew = function (constructor, ...args) {
     const obj = {}
+    Object.setPrototypeOf(obj, constructor.prototype)
     constructor.call(obj, ...args)
     return obj
 }
